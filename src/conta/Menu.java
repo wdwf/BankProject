@@ -3,17 +3,29 @@ package conta;
 import java.util.Scanner;
 
 import conta.model.Conta;
+import conta.model.ContaCorrente;
+import conta.model.ContaPoupanca;
+
 import conta.util.Cores;
 
 public class Menu {
 	public static void main(String[] args) {
 
-		Conta c1 = new Conta(1, 123, 1, "Bob", 10000.0f);
-		c1.visualizar();
-		c1.sacar(12000.0f);
-		c1.visualizar();
-		c1.depositar(5000.0f);
-		c1.visualizar();
+		// Teste da classe ContaCorrente
+		ContaCorrente cc1 = new ContaCorrente(2, 123, 1, "Mari", 15000.0f, 1000.0f);
+		cc1.visualizar();
+		cc1.sacar(12000.0f);
+		cc1.visualizar();
+		cc1.depositar(5000.0f);
+		cc1.visualizar();
+
+		// Teste da classe ContaPoupanca
+		ContaPoupanca cp1 = new ContaPoupanca(3, 123, 2, "Jao", 100000.0f, 15);
+		cp1.visualizar();
+		cp1.sacar(1000.0f);
+		cp1.visualizar();
+		cp1.depositar(5000.0f);
+		cp1.visualizar();
 
 		Scanner leia = new Scanner(System.in);
 		int opcao;
