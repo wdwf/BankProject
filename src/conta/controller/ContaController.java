@@ -1,6 +1,7 @@
 package conta.controller;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Scanner;
 
 import conta.model.Conta;
@@ -16,10 +17,10 @@ public class ContaController implements ContaRepository {
 
     @Override
     public void procurarPorNumero(int numero) {
-        var conta = buscarNaCollection(numero);
+        Optional<Conta> conta = Optional.ofNullable(buscarNaCollection(numero));
 
-        if (conta != null) {
-            conta.visualizar();
+        if (conta.isPresent()) {
+            conta.get().visualizar();
         } else {
             System.out.println("\nA Conta numero: " + numero + " não foi encontrada!");
         }
@@ -40,22 +41,24 @@ public class ContaController implements ContaRepository {
 
     @Override
     public void atualizar(Conta conta) {
-        var buscaConta = buscarNaCollection(conta.getNumero());
+        Optional<Conta> buscaConta = Optional.ofNullable(buscarNaCollection(conta.getNumero()));
 
-        if (buscaConta != null) {
-            listaContas.set(listaContas.indexOf(buscaConta), conta);
-            System.out.println("\nA Conta numero: " + conta.getNumero() + " foi atualizada com sucesso!");
+        if (buscaConta.isPresent()) {
+            listaContas.set(listaContas.indexOf(buscaConta.get()), conta);
+            System.out.println(Cores.TEXT_GREEN_BOLD + "\nA Conta numero: " + conta.getNumero()
+                    + " foi atualizada com sucesso!" + Cores.TEXT_RESET);
         } else {
-            System.out.println("\nA Conta numero: " + conta.getNumero() + " não foi encontrada!");
+            System.out.println(Cores.TEXT_RED_BOLD + "\nA Conta numero: " + conta.getNumero() + " não foi encontrada!"
+                    + Cores.TEXT_RESET);
         }
     }
 
     @Override
     public void deletar(int numero) {
-        var conta = buscarNaCollection(numero);
+        Optional<Conta> conta = Optional.ofNullable(buscarNaCollection(numero));
 
-        if (conta != null) {
-            listaContas.remove(conta);
+        if (conta.isPresent()) {
+            listaContas.remove(conta.get());
             System.out.println(Cores.TEXT_GREEN_BOLD + "\nA Conta numero: " + numero + " foi deletada com sucesso!\n"
                     + Cores.TEXT_RESET);
         } else {
@@ -66,20 +69,46 @@ public class ContaController implements ContaRepository {
 
     @Override
     public void sacar(int numero, float valor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sacar'");
+        Optional<Conta> conta = Optional.ofNullable(buscarNaCollection(numero));
+
+        if (conta.isPresent()) {
+            if (conta.get().sacar(valor)) {
+                System.out.println(Cores.TEXT_GREEN_BOLD + "\nSaque realizado com sucesso!" + Cores.TEXT_RESET);
+            }
+        } else {
+            System.out.println(
+                    Cores.TEXT_RED_BOLD + "\nA Conta numero: " + numero + " não foi encontrada!\n" + Cores.TEXT_RESET);
+        }
     }
 
     @Override
     public void depositar(int numero, float valor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'depositar'");
+        Optional<Conta> conta = Optional.ofNullable(buscarNaCollection(numero));
+
+        if (conta.isPresent()) {
+            conta.get().depositar(valor);
+            System.out.println(Cores.TEXT_GREEN_BOLD + "\nDepósito realizado com sucesso!" + Cores.TEXT_RESET);
+        } else {
+            System.out.println(
+                    Cores.TEXT_RED_BOLD + "\nA Conta numero: " + numero
+                            + " não foi encontrada ou a Conta destino não é uma Conta Corrente!\n" + Cores.TEXT_RESET);
+        }
     }
 
     @Override
     public void transferir(int numeroOrigem, int numeroDestino, float valor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'transferir'");
+        Optional<Conta> contaOrigem = Optional.ofNullable(buscarNaCollection(numeroOrigem));
+        Optional<Conta> contaDestino = Optional.ofNullable(buscarNaCollection(numeroDestino));
+
+        if (contaOrigem.isPresent() && contaDestino.isPresent()) {
+            if (contaOrigem.get().sacar(valor)) {
+                contaDestino.get().depositar(valor);
+                System.out.println(Cores.TEXT_GREEN_BOLD + "\nTransferência realizada com sucesso!" + Cores.TEXT_RESET);
+            }
+        } else {
+            System.out.println(Cores.TEXT_RED_BOLD + "\nA Conta de origem e/ou destino não foram encontradas!\n"
+                    + Cores.TEXT_RESET);
+        }
     }
 
     public int gerarNumero() {
