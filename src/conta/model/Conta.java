@@ -94,7 +94,7 @@ public abstract class Conta {
         System.out.println("Agência: " + this.agencia);
         System.out.println("Tipo da Conta: " + tipo);
         System.out.println("Titular: " + this.titular);
-        System.out.printf("\nSaldo: %.2f\n", this.saldo);
+        System.out.printf("Saldo: %.2f\n", this.saldo);
 
     }
 
