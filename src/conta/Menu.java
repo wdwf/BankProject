@@ -17,9 +17,8 @@ public class Menu {
 
 		Scanner leia = new Scanner(System.in);
 
-		int opcao, numero, agencia, tipo, aniversario, numeroDestino;
-		String titular;
-		float saldo, limite, valor;
+		int opcao, numero, numeroDestino;
+		float valor;
 
 		System.out.println("\nCriar Contas\n");
 
@@ -79,39 +78,7 @@ public class Menu {
 			switch (opcao) {
 				case 1:
 					System.out.println(Cores.TEXT_WHITE + "Criar Conta\n\n");
-
-					System.out.println("Digite o número da Agência: ");
-					agencia = leia.nextInt();
-					System.out.println("Digite o Nome do Titular: ");
-					leia.skip("\\R?");
-					titular = leia.nextLine();
-
-					do {
-						System.out.println("Digite o Tipo da Conta: (1 - CC ou 2 - CP)");
-						tipo = leia.nextInt();
-					} while (tipo < 1 || tipo > 2);
-
-					System.out.println("Digite o Saldo da Conta (R$): ");
-					saldo = leia.nextFloat();
-
-					switch (tipo) {
-						case 1 -> {
-							System.out.println("Digite o Limite de Crédito (R$): ");
-							limite = leia.nextFloat();
-							contas.cadastrar(
-									new ContaCorrente(contas.gerarNumero(), agencia, tipo, titular, saldo, limite));
-						}
-
-						case 2 -> {
-							System.out.println("Digite o dia do Aniversário da Conta: ");
-							aniversario = leia.nextInt();
-							contas.cadastrar(new ContaPoupanca(contas.gerarNumero(), agencia, tipo, titular, saldo,
-									aniversario));
-						}
-						default -> {
-							System.out.println(Cores.TEXT_RED_BOLD + "\nOpção Inválida!\n" + Cores.TEXT_RESET);
-						}
-					}
+					contas.formulario(leia, opcao);
 
 					keyPress();
 					break;
@@ -132,45 +99,7 @@ public class Menu {
 				case 4:
 					System.out.println(Cores.TEXT_WHITE + "Atualizar dados da Conta\n\n");
 
-					System.out.println("Digite o número da Conta: ");
-					numero = leia.nextInt();
-					var buscaConta = contas.buscarNaCollection(numero);
-
-					if (buscaConta != null) {
-
-						tipo = buscaConta.getTipo();
-
-						System.out.println("Digite o número da Agência: ");
-						agencia = leia.nextInt();
-						System.out.println("Digite o Nome do Titular: ");
-						leia.skip("\\R?");
-						titular = leia.nextLine();
-
-						System.out.println("Digite o Saldo da Conta (R$): ");
-						saldo = leia.nextFloat();
-
-						switch (tipo) {
-							case 1 -> {
-								System.out.println("Digite o Limite de Crédito (R$): ");
-								limite = leia.nextFloat();
-								contas.atualizar(
-										new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
-							}
-
-							case 2 -> {
-								System.out.println("Digite o dia do Aniversário da Conta: ");
-								aniversario = leia.nextInt();
-								contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo,
-										aniversario));
-							}
-							default -> {
-								System.out.println(Cores.TEXT_RED_BOLD + "\nOpção Inválida!\n" + Cores.TEXT_RESET);
-							}
-						}
-
-					} else {
-						System.out.println(Cores.TEXT_RED_BOLD + "\nConta não encontrada!\n" + Cores.TEXT_RESET);
-					}
+					contas.formulario(leia, opcao);
 
 					keyPress();
 					break;

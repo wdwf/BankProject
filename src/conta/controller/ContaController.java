@@ -124,37 +124,120 @@ public class ContaController implements ContaRepository {
         return null;
     }
 
-    public void formulario(Scanner input) {
-        System.out.println("Digite o número da Agência: ");
-        int agencia = input.nextInt();
-        System.out.println("Digite o Nome do Titular: ");
-        input.skip("\\R?");
-        String titular = input.nextLine();
+    public void formulario(Scanner input, int opcao) {
+        int numero, agencia, tipo, aniversario;
+        String titular;
+        float saldo, limite;
 
-        int tipo;
-        do {
-            System.out.println("Digite o Tipo da Conta: (1 - CC ou 2 - CP)");
-            tipo = input.nextInt();
-        } while (tipo < 1 || tipo > 2);
+        if (opcao == 1) {
+            System.out.println("Digite o número da Agência: ");
+            agencia = input.nextInt();
+            System.out.println("Digite o Nome do Titular: ");
+            input.skip("\\R?");
+            titular = input.nextLine();
 
-        System.out.println("Digite o Saldo da Conta (R$): ");
-        float saldo = input.nextFloat();
+            do {
+                System.out.println("Digite o Tipo da Conta: (1 - CC ou 2 - CP)");
+                tipo = input.nextInt();
+            } while (tipo < 1 || tipo > 2);
 
-        switch (tipo) {
-            case 1 -> {
-                System.out.println("Digite o Limite de Crédito (R$): ");
-                float limite = input.nextFloat();
-                cadastrar(new ContaCorrente(gerarNumero(), agencia, tipo, titular, saldo, limite));
+            System.out.println("Digite o Saldo da Conta (R$): ");
+            saldo = input.nextFloat();
+
+            switch (tipo) {
+                case 1 -> {
+                    System.out.println("Digite o Limite de Crédito (R$): ");
+                    limite = input.nextFloat();
+                    cadastrar(
+                            new ContaCorrente(gerarNumero(), agencia, tipo, titular, saldo, limite));
+                }
+
+                case 2 -> {
+                    System.out.println("Digite o dia do Aniversário da Conta: ");
+                    aniversario = input.nextInt();
+                    cadastrar(new ContaPoupanca(gerarNumero(), agencia, tipo, titular, saldo,
+                            aniversario));
+                }
+                default -> {
+                    System.out.println(Cores.TEXT_RED_BOLD + "\nOpção Inválida!\n" + Cores.TEXT_RESET);
+                }
             }
+        } else {
+            System.out.println("Digite o número da Conta: ");
+            numero = input.nextInt();
 
-            case 2 -> {
-                System.out.println("Digite o dia do Aniversário da Conta: ");
-                int aniversario = input.nextInt();
-                cadastrar(new ContaPoupanca(gerarNumero(), agencia, tipo, titular, saldo, aniversario));
-            }
-            default -> {
-                System.out.println(Cores.TEXT_RED_BOLD + "\nOpção Inválida!\n" + Cores.TEXT_RESET);
+            Optional<Conta> buscaConta = Optional.ofNullable(buscarNaCollection(numero));
+
+            if (buscaConta.isPresent()) {
+                tipo = buscaConta.get().getTipo();
+                System.out.println("Digite o número da Agência: ");
+                agencia = input.nextInt();
+                System.out.println("Digite o Nome do Titular: ");
+                input.skip("\\R?");
+                titular = input.nextLine();
+
+                System.out.println("Digite o Saldo da Conta (R$): ");
+                saldo = input.nextFloat();
+
+                switch (tipo) {
+                    case 1 -> {
+                        System.out.println("Digite o Limite de Crédito (R$): ");
+                        limite = input.nextFloat();
+                        atualizar(
+                                new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
+                    }
+
+                    case 2 -> {
+                        System.out.println("Digite o dia do Aniversário da Conta: ");
+                        aniversario = input.nextInt();
+                        atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo,
+                                aniversario));
+                    }
+                    default -> {
+                        System.out.println(Cores.TEXT_RED_BOLD + "\nOpção Inválida!\n" + Cores.TEXT_RESET);
+                    }
+                }
+
+            } else {
+                System.out.println(Cores.TEXT_RED_BOLD + "\nConta não encontrada!\n" + Cores.TEXT_RESET);
             }
         }
+
+        // ----
+
+        // System.out.println("Digite o número da Agência: ");
+        // int agencia = input.nextInt();
+        // System.out.println("Digite o Nome do Titular: ");
+        // input.skip("\\R?");
+        // String titular = input.nextLine();
+
+        // int tipo;
+        // do {
+        // System.out.println("Digite o Tipo da Conta: (1 - CC ou 2 - CP)");
+        // tipo = input.nextInt();
+        // } while (tipo < 1 || tipo > 2);
+
+        // System.out.println("Digite o Saldo da Conta (R$): ");
+        // float saldo = input.nextFloat();
+
+        // switch (tipo) {
+        // case 1 -> {
+        // System.out.println("Digite o Limite de Crédito (R$): ");
+        // float limite = input.nextFloat();
+        // cadastrar(new ContaCorrente(gerarNumero(), agencia, tipo, titular, saldo,
+        // limite));
+        // }
+
+        // case 2 -> {
+        // System.out.println("Digite o dia do Aniversário da Conta: ");
+        // int aniversario = input.nextInt();
+        // cadastrar(new ContaPoupanca(gerarNumero(), agencia, tipo, titular, saldo,
+        // aniversario));
+        // }
+        // default -> {
+        // System.out.println(Cores.TEXT_RED_BOLD + "\nOpção Inválida!\n" +
+        // Cores.TEXT_RESET);
+        // }
+        // }
     }
 }
